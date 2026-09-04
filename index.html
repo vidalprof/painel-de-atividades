@@ -66,8 +66,15 @@ main{padding:12px 12px 40px;max-width:820px;margin:0 auto}
   body{display:-webkit-box;display:flex;-webkit-box-orient:vertical;
     flex-direction:column;overflow:hidden}
   header{position:static;-webkit-box-flex:0;flex:0 0 auto}
+  /* ⚠️ SEM `max-width` E SEM `margin:0 auto` — de propósito (pedido do Marcos,
+     set/2026: *"pode jogar a lista de atividades mais pra esquerda, bem no
+     começo, assim sobra mais espaço para o painel e a lista que vc citou"*).
+     Antes o conteúdo era uma coluna de 1460px CENTRADA: num monitor de 1920 isso
+     jogava 230px de vazio de cada lado e empurrava a lista para o meio da tela.
+     Agora a lista começa na borda esquerda (só o respiro de 10px) e TODA a
+     largura da tela é dividida entre lista e controle. */
   #corpo{-webkit-box-flex:1;flex:1 1 auto;display:-webkit-box;display:flex;
-    min-height:0;gap:14px;max-width:1460px;margin:0 auto;width:100%;padding:12px}
+    min-height:0;gap:14px;margin:0;width:100%;padding:12px 12px 12px 10px}
   main{-webkit-box-flex:1;flex:1 1 auto;min-height:0;overflow-y:auto;
     max-width:none;padding:0 4px 24px;margin:0}
   #sala{display:-webkit-box;display:flex;-webkit-box-orient:vertical;
@@ -91,7 +98,7 @@ main{padding:12px 12px 40px;max-width:820px;margin:0 auto}
   #busca{padding:11px 12px;font-size:15px;min-height:40px}
   #chips{padding:6px 0 0}
   .chip{padding:0 12px}      /* mais estreito, mas os 40px de ALTURA ficam */
-  #corpo{padding:8px 12px}
+  #corpo{padding:8px 12px 8px 10px}
   .card{padding:9px 11px;margin-bottom:7px}
   .trab{margin-bottom:7px}
 }
@@ -105,6 +112,25 @@ main{padding:12px 12px 40px;max-width:820px;margin:0 auto}
    (460 + a folga da barra de rolagem); daí para cima, tudo o que sobra vai para
    as atividades, que é onde ele procura e copia. */
 @media (min-width:1200px){ #sala{-webkit-box-flex:0;flex:0 0 470px} }
+/* ⭐ E no monitor grande o controle CRESCE de verdade (não é faixa vazia): o
+   `.wrap` do próprio `controle.html` passou a 560px, então a partir de 1520 de
+   largura a coluna vai a 580 e o controle usa isso — campo do alvo mais largo,
+   botões maiores e a lista "JÁ TERMINARAM" cabendo numa linha só. */
+@media (min-width:1520px){ #sala{-webkit-box-flex:0;flex:0 0 580px} }
+/* ⭐ E A LARGURA QUE SOBROU VIRA MAIS ATIVIDADE NA TELA, não cartão gigante.
+   Com a lista encostada à esquerda, no monitor grande cada cartão ficava com
+   1300px de largura e só 6 atividades cabiam na tela — de 54. Em duas/três
+   colunas ele enxerga o dobro/triplo sem rolar, que é o ponto do painel:
+   achar o link rápido. `grid` é progressivo — PC antigo sem suporte cai no
+   empilhado de sempre, sem quebrar nada. O `<h2>` da turma atravessa as
+   colunas para a divisão por ano continuar legível. */
+@media (min-width:1500px){
+  #lista{display:grid;grid-template-columns:1fr 1fr;gap:9px 10px;align-items:start}
+  #lista h2{grid-column:1/-1;margin:16px 0 2px}
+  #lista h2:first-child{margin-top:0}
+  #lista .card{margin-bottom:0}
+}
+@media (min-width:1900px){ #lista{grid-template-columns:1fr 1fr 1fr} }
 h2{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--fraco);
   margin:20px 0 8px;font-weight:700}
 h2:first-of-type{margin-top:4px}
