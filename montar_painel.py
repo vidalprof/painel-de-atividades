@@ -271,10 +271,19 @@ h2:first-of-type{margin-top:4px}
     <p id="vazio">Nada com esse nome. Tente outra palavra.</p>
     <p id="rodape">Gerado do catálogo do projeto &middot; @@QUANDO@@</p>
   </main>
+  <!-- ⚠️⚠️ O `?v=` NÃO É ENFEITE — é a cura de um defeito que custou duas rodadas
+       de conversa com o Marcos (set/2026). Eu publiquei uma caixa nova no
+       controle, avisei que estava no ar, e ele respondeu *"não apareceu pra
+       mim"*. O servidor estava certo (o carimbo provou); o navegador dele é que
+       servia o `controle.html` guardado — o Pages manda o HTML com cache de 10
+       minutos, e um Ctrl+F5 na página-PAI não obriga o IFRAME a buscar de novo.
+       Agora o endereço do iframe carrega a impressão digital do próprio
+       controle: mudou o controle, mudou o endereço, o navegador é OBRIGADO a
+       buscar a versão nova. Zero clique da parte dele. -->
   <aside id="sala">
-    <h3>Controle da sala<a href="https://vidalprof.github.io/controle-lab/controle.html" target="_blank" rel="noopener">abrir sozinho &rsaquo;</a></h3>
+    <h3>Controle da sala<a href="https://vidalprof.github.io/controle-lab/controle.html?v=@@VCTRL@@" target="_blank" rel="noopener">abrir sozinho &rsaquo;</a></h3>
     <iframe id="ifsala" title="Controle do Laborat&oacute;rio" loading="lazy"
-      src="https://vidalprof.github.io/controle-lab/controle.html"></iframe>
+      src="https://vidalprof.github.io/controle-lab/controle.html?v=@@VCTRL@@"></iframe>
   </aside>
 </div>
 <script>
@@ -376,11 +385,21 @@ def main():
         return 2
     itens.sort(key=lambda a: (a["pos"], a["nome"].lower()))
     import datetime
+    import hashlib
+    # a marca do iframe = impressão digital do controle publicado. Mudou o
+    # controle -> muda o endereço -> o navegador busca do servidor. Se o arquivo
+    # não estiver aqui (raro), cai na data, que ao menos muda a cada publicação.
+    _ctrl = os.path.join(RAIZ, "_lab", "controle.html")
+    if os.path.exists(_ctrl):
+        vctrl = hashlib.sha1(io.open(_ctrl, "rb").read()).hexdigest()[:10]
+    else:
+        vctrl = datetime.date.today().strftime("%Y%m%d")
     # ⚠️ nada de `%` de formatação aqui: o CSS da página tem `width:100%}` e o
     #    format do Python estoura em cima dele. Marcas explícitas, sem surpresa.
     html = (PAGINA
             .replace("@@DADOS@@", json.dumps(itens, ensure_ascii=False))
             .replace("@@TOTAL@@", str(len(itens)))
+            .replace("@@VCTRL@@", vctrl)
             .replace("@@QUANDO@@", datetime.date.today().strftime("%d/%m/%Y")))
     io.open(SAIDA, "w", encoding="utf-8").write(html)
     comlink = len([a for a in itens if a["link"]])

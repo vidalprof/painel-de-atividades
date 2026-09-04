@@ -166,10 +166,19 @@ h2:first-of-type{margin-top:4px}
     <p id="vazio">Nada com esse nome. Tente outra palavra.</p>
     <p id="rodape">Gerado do catálogo do projeto &middot; 04/09/2026</p>
   </main>
+  <!-- ⚠️⚠️ O `?v=` NÃO É ENFEITE — é a cura de um defeito que custou duas rodadas
+       de conversa com o Marcos (set/2026). Eu publiquei uma caixa nova no
+       controle, avisei que estava no ar, e ele respondeu *"não apareceu pra
+       mim"*. O servidor estava certo (o carimbo provou); o navegador dele é que
+       servia o `controle.html` guardado — o Pages manda o HTML com cache de 10
+       minutos, e um Ctrl+F5 na página-PAI não obriga o IFRAME a buscar de novo.
+       Agora o endereço do iframe carrega a impressão digital do próprio
+       controle: mudou o controle, mudou o endereço, o navegador é OBRIGADO a
+       buscar a versão nova. Zero clique da parte dele. -->
   <aside id="sala">
-    <h3>Controle da sala<a href="https://vidalprof.github.io/controle-lab/controle.html" target="_blank" rel="noopener">abrir sozinho &rsaquo;</a></h3>
+    <h3>Controle da sala<a href="https://vidalprof.github.io/controle-lab/controle.html?v=12a5e17450" target="_blank" rel="noopener">abrir sozinho &rsaquo;</a></h3>
     <iframe id="ifsala" title="Controle do Laborat&oacute;rio" loading="lazy"
-      src="https://vidalprof.github.io/controle-lab/controle.html"></iframe>
+      src="https://vidalprof.github.io/controle-lab/controle.html?v=12a5e17450"></iframe>
   </aside>
 </div>
 <script>
