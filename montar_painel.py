@@ -138,6 +138,78 @@ h1 small{display:block;font-weight:400;font-size:12px;opacity:.8;letter-spacing:
      turma no celular — justamente o gesto que ele mais vai usar aqui. */
 .chip[aria-pressed="true"]{background:#fff;color:var(--azul);border-color:#fff}
 main{padding:12px 12px 40px;max-width:820px;margin:0 auto}
+/* ⭐ O CONTROLE DA SALA AO LADO (pedido do Marcos, set/2026: *"tem como o
+   controle da sala ser no mesmo painel de atividades?... é mais fácil para
+   copiar e colar os links"* e *"o painel de controle é bem pequeno, daria para
+   ficar à direita do outro painel, pq tem espaço"*).
+
+   Ele COPIA o link de uma atividade aqui e COLA no controle para mandar às
+   máquinas da sala. Eram duas abas; agora é uma tela: lista à esquerda,
+   controle à direita.
+
+   ⚠️ O CONTROLE NÃO MUDA UMA LINHA. Ele entra por `<iframe>` apontando para o
+   endereço dele mesmo (`controle-lab/controle.html`), que continua funcionando
+   sozinho, no mesmo link de sempre. Duas coisas tornam isso seguro, e as duas
+   foram conferidas no arquivo dele:
+     · o `controle.html` não tem NENHUMA chamada que navegue a janela
+       (`window.top`, `location.href=`, `window.open`) — quem tem é o
+       `index.html`, que é a tela da MÁQUINA DO ALUNO, e essa não entra aqui;
+     · painel e controle moram no MESMO domínio (vidalprof.github.io), então já
+       hoje dividem o mesmo localStorage: embutir não muda nada nisso.
+   Ele já nasce estreito (`max-width:460px` no CSS dele) — cabe na faixa. */
+#corpo{display:block}
+#sala{display:none}
+#btsala{display:none}
+/* ⚠️ O CORTE É 980px, não 1040: o netbook da escola tem 1024 de largura, e é
+   justamente nele que ele usa o controle. Com 1040 a coluna sumiria lá. Em 1024
+   a faixa fica com 430px (o controle já nasce com max-width:460) e a lista com
+   o resto — medido, sem rolagem lateral. */
+@media (min-width:980px){
+  /* a página inteira vira aplicativo: o cabeçalho fica, e só a LISTA rola.
+     Assim o controle da direita não sai da tela quando ele procura a atividade. */
+  html,body{height:100%}
+  body{display:-webkit-box;display:flex;-webkit-box-orient:vertical;
+    flex-direction:column;overflow:hidden}
+  header{position:static;-webkit-box-flex:0;flex:0 0 auto}
+  #corpo{-webkit-box-flex:1;flex:1 1 auto;display:-webkit-box;display:flex;
+    min-height:0;gap:14px;max-width:1460px;margin:0 auto;width:100%;padding:12px}
+  main{-webkit-box-flex:1;flex:1 1 auto;min-height:0;overflow-y:auto;
+    max-width:none;padding:0 4px 24px;margin:0}
+  #sala{display:-webkit-box;display:flex;-webkit-box-orient:vertical;
+    flex-direction:column;-webkit-box-flex:0;flex:0 0 430px;min-height:0}
+  #sala h3{margin:0 0 7px;font-size:13px;text-transform:uppercase;
+    letter-spacing:1px;color:var(--fraco);font-weight:700}
+  #sala h3 a{color:var(--azul-c);text-decoration:none;font-size:12px;
+    text-transform:none;letter-spacing:0;float:right;font-weight:600}
+  #sala iframe{-webkit-box-flex:1;flex:1 1 auto;width:100%;border:0;
+    border-radius:14px;background:#0c1730;
+    -webkit-box-shadow:0 4px 14px rgba(90,60,20,.16);
+    box-shadow:0 4px 14px rgba(90,60,20,.16)}
+}
+/* ⚠️ TELA BAIXA (o netbook de 600px de altura): o cabeçalho comia 172 dos 600,
+   e sobravam 416 para a lista E para o controle. Cada pixel tirado daqui vira
+   pixel útil nos dois. Mesma lição do Pinta e Monta. */
+@media (min-width:980px) and (max-height:700px){
+  header{padding:6px 12px}
+  h1{font-size:15px;margin-bottom:5px}
+  h1 small{font-size:11px}
+  #busca{padding:11px 12px;font-size:15px;min-height:40px}
+  #chips{padding:6px 0 0}
+  .chip{padding:0 12px}      /* mais estreito, mas os 40px de ALTURA ficam */
+  #corpo{padding:8px 12px}
+  .card{padding:9px 11px;margin-bottom:7px}
+  .trab{margin-bottom:7px}
+}
+/* ⚠️ E o que eu NÃO encolhi, de propósito: a ALTURA dos chips e dos botões.
+   Na primeira tentativa apertei os dois e ganhei 34px — ao preço de 12 alvos
+   abaixo dos 40px que a casa exige para o dedo. Espaço se tira do título e do
+   respiro, nunca do que a pessoa precisa acertar. */
+/* ⚠️ O CONTROLE NÃO GANHA MAIS DO QUE USA (ajuste do Marcos: *"redistribua
+   melhor a tela"*). O CSS dele é `max-width:460px` — dar 560 desperdiçava 100px
+   de faixa vazia enquanto a lista de atividades ficava apertada. O teto é 470
+   (460 + a folga da barra de rolagem); daí para cima, tudo o que sobra vai para
+   as atividades, que é onde ele procura e copia. */
+@media (min-width:1200px){ #sala{-webkit-box-flex:0;flex:0 0 470px} }
 h2{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--fraco);
   margin:20px 0 8px;font-weight:700}
 h2:first-of-type{margin-top:4px}
@@ -164,11 +236,18 @@ h2:first-of-type{margin-top:4px}
   <input id="busca" type="search" placeholder="Buscar por nome ou pelo que trabalha…" autocomplete="off">
   <div id="chips"></div>
 </header>
-<main>
-  <div id="lista"></div>
-  <p id="vazio">Nada com esse nome. Tente outra palavra.</p>
-  <p id="rodape">Gerado do catálogo do projeto &middot; @@QUANDO@@</p>
-</main>
+<div id="corpo">
+  <main>
+    <div id="lista"></div>
+    <p id="vazio">Nada com esse nome. Tente outra palavra.</p>
+    <p id="rodape">Gerado do catálogo do projeto &middot; @@QUANDO@@</p>
+  </main>
+  <aside id="sala">
+    <h3>Controle da sala<a href="https://vidalprof.github.io/controle-lab/controle.html" target="_blank" rel="noopener">abrir sozinho &rsaquo;</a></h3>
+    <iframe id="ifsala" title="Controle do Laborat&oacute;rio" loading="lazy"
+      src="https://vidalprof.github.io/controle-lab/controle.html"></iframe>
+  </aside>
+</div>
 <script>
 var DADOS = @@DADOS@@;
 
