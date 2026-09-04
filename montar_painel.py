@@ -222,20 +222,23 @@ main{padding:12px 12px 40px;max-width:820px;margin:0 auto}
    largura a coluna vai a 580 e o controle usa isso — campo do alvo mais largo,
    botões maiores e a lista "JÁ TERMINARAM" cabendo numa linha só. */
 @media (min-width:1520px){ #sala{-webkit-box-flex:0;flex:0 0 580px} }
-/* ⭐ E A LARGURA QUE SOBROU VIRA MAIS ATIVIDADE NA TELA, não cartão gigante.
-   Com a lista encostada à esquerda, no monitor grande cada cartão ficava com
-   1300px de largura e só 6 atividades cabiam na tela — de 54. Em duas/três
-   colunas ele enxerga o dobro/triplo sem rolar, que é o ponto do painel:
-   achar o link rápido. `grid` é progressivo — PC antigo sem suporte cai no
-   empilhado de sempre, sem quebrar nada. O `<h2>` da turma atravessa as
-   colunas para a divisão por ano continuar legível. */
-@media (min-width:1500px){
-  #lista{display:grid;grid-template-columns:1fr 1fr;gap:9px 10px;align-items:start}
-  #lista h2{grid-column:1/-1;margin:16px 0 2px}
-  #lista h2:first-child{margin-top:0}
-  #lista .card{margin-bottom:0}
+/* ⚠️ A LISTA É UMA COLUNA VERTICAL — e isso é escolha, não sobra.
+   Eu tinha posto a lista em GRADE de 2/3 colunas no monitor grande, achando que
+   ver 15 atividades de uma vez ajudaria. O Marcos olhou e disse: *"acho que
+   você podia deixar a lista da esquerda como estava, na vertical, desse jeito
+   ocupa muito espaço"*. Ele tem razão pelo uso real: ele varre a coluna de cima
+   para baixo procurando UMA atividade e copia o link — a grade obriga o olho a
+   ziguezaguear e espalha a divisão por turma.
+   Então a coluna volta, e a largura que sobra no monitor grande vai para o
+   CONTROLE (que é o que ele usa ao lado), não para esticar cartão. */
+@media (min-width:1360px){
+  main{max-width:700px}                 /* a coluna de leitura, encostada à esquerda */
+  /* ⚠️ e o controle OCUPA o resto, em vez de deixar um vazio claro do lado
+     direito: com as duas colunas travadas sobrava meia tela de fundo liso, que
+     lê como página quebrada. O `.wrap` do controle vai até 720px, então ele
+     cresce de verdade dentro dessa faixa (campo e botões maiores). */
+  #sala{-webkit-box-flex:1;flex:1 1 auto;min-width:0}
 }
-@media (min-width:1900px){ #lista{grid-template-columns:1fr 1fr 1fr} }
 h2{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--fraco);
   margin:20px 0 8px;font-weight:700}
 h2:first-of-type{margin-top:4px}
